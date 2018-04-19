@@ -258,7 +258,7 @@ class WindowModel(NERModel):
         W = tf.get_variable("W", (n_window_features * embedding_size, hidden_size),
                             tf.float32, initializer=tf.contrib.layers.xavier_initializer())
         b1 = tf.Variable(tf.zeros((hidden_size)), name = 'b1')
-        z = tf.add(tf.matmul(x, W), b1)
+        z = tf.matmul(x, W) + b1
         h = tf.nn.relu(z)
         #h_drop = tf.nn.dropout(h, keep_prob = 1 - self.dropout_placeholder) #fail to train
         h_drop = tf.nn.dropout(h, self.dropout_placeholder)
@@ -266,9 +266,9 @@ class WindowModel(NERModel):
         #but it didn't work in assignment3, looked like the dropout rate is 100%
         U = tf.get_variable("U", (hidden_size, n_classes),
                             tf.float32, initializer=tf.contrib.layers.xavier_initializer())
-        b2 = tf.Variable(tf.zeros((1, n_classes)), name = 'b2')
+        b2 = tf.Variable(tf.zeros((n_classes)), name = 'b2')
         
-        pred = tf.add(tf.matmul(h_drop, U), b2)
+        pred = tf.matmul(h_drop, U) + b2
 
         ### END YOUR CODE
         return pred
